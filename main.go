@@ -2,6 +2,8 @@ package main
 
 import (
 	"aoc2024/day00"
+	"aoc2024/day01"
+	"aoc2024/utils"
 	"fmt"
 	"os"
 )
@@ -16,18 +18,14 @@ func main() {
 	var input string
 	switch day {
 	case "00":
-		input = readInput("day00/input.txt")
+		input = utils.ReadInput("day00/input.txt")
 		fmt.Println("Part 1:", day00.SolvePart1(input))
 		fmt.Println("Part 2:", day00.SolvePart2(input))
+	case "01":
+		input = utils.ReadInput("day01/input.txt")
+		fmt.Println("Part 1:", day01.SolvePart1(input))
+		fmt.Println("Part 2:", day01.SolvePart2(input))
 	default:
 		fmt.Printf("Day %s not solved yet!\n", day)
 	}
-}
-
-func readInput(path string) string {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
-	return string(data)
 }

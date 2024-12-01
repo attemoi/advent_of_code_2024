@@ -4,10 +4,10 @@ import (
 	"os"
 )
 
-func ReadFile(path string) (string, error) {
+func ReadInput(path string) string {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return "", err
+		panic(err)
 	}
-	return string(data), nil
+	return string(data)
 }

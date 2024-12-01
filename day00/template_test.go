@@ -1,12 +1,12 @@
 package day00
 
 import (
-	"os"
+	"aoc2024/utils"
 	"testing"
 )
 
 func TestSolvePart1(t *testing.T) {
-	input, _ := os.ReadFile("input.txt")
+	input := utils.ReadInput("input.txt")
 	expected := 60
 	result := SolvePart1(string(input))
 	if result != expected {
