@@ -11,3 +11,10 @@ func ReadInput(path string) string {
 	}
 	return string(data)
 }
+
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}

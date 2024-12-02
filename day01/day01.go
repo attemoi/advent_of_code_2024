@@ -1,6 +1,7 @@
 package day01
 
 import (
+	"aoc2024/utils"
 	"sort"
 	"strconv"
 	"strings"
@@ -17,7 +18,7 @@ func SolvePart1(input string) int {
 func sumOfDiffs(left []int, right []int) int {
 	sum := 0
 	for i, leftNum := range left {
-		sum += Abs(leftNum - right[i])
+		sum += utils.Abs(leftNum - right[i])
 	}
 	return sum
 }
@@ -64,13 +65,6 @@ func parseLists(input string) (left []int, right []int) {
 	}
 
 	return left, right
-}
-
-func Abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
 }
 
 func IsBlank(s string) bool {
