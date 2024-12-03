@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"os"
+	"strconv"
 )
 
 func ReadInput(path string) string {
@@ -17,4 +19,16 @@ func Abs(x int) int {
 		return -x
 	}
 	return x
+}
+
+func ToInts(strings []string) ([]int, error) {
+	ints := make([]int, len(strings))
+	for i, str := range strings {
+		num, err := strconv.Atoi(str)
+		if err != nil {
+			return nil, fmt.Errorf("failed to convert %q to int at index %d: %w", str, i, err)
+		}
+		ints[i] = num
+	}
+	return ints, nil
 }
