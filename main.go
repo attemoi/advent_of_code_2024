@@ -5,6 +5,7 @@ import (
 	"aoc2024/day01"
 	"aoc2024/day02"
 	"aoc2024/day03"
+	"aoc2024/day04"
 	"aoc2024/utils"
 	"fmt"
 	"os"
@@ -35,6 +36,10 @@ func main() {
 		input = utils.ReadInput("day03/input.txt")
 		fmt.Println("Part 1:", day03.SolvePart1(input))
 		fmt.Println("Part 2:", day03.SolvePart2(input))
+	case "04":
+		input = utils.ReadInput("day04/input.txt")
+		fmt.Println("Part 1:", day04.SolvePart1(input))
+		fmt.Println("Part 2:", day04.SolvePart2(input))
 	default:
 		fmt.Printf("Day %s not solved yet!\n", day)
 	}
