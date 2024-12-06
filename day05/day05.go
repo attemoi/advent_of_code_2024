@@ -25,11 +25,10 @@ func SolvePart2(input string) int {
 	return sumOfMiddlePageNumbers(filteredPages)
 }
 
-func orderPages(pages [][]int, rules []Rule) [][]int {
+func orderPages(pages [][]int, rules []Rule) {
 	for _, page := range pages {
 		slices.SortFunc(page, ruleComparator(rules))
 	}
-	return pages
 }
 
 func sumOfMiddlePageNumbers(pages [][]int) int {
@@ -42,7 +41,7 @@ func sumOfMiddlePageNumbers(pages [][]int) int {
 }
 
 func pagesInRightOrder(pages [][]int, rules []Rule) [][]int {
-	filtered := [][]int{}
+	var filtered [][]int
 	for _, page := range pages {
 		if slices.IsSortedFunc(page, ruleComparator(rules)) {
 			filtered = append(filtered, page)
@@ -52,7 +51,7 @@ func pagesInRightOrder(pages [][]int, rules []Rule) [][]int {
 }
 
 func pagesInWrongOrder(pages [][]int, rules []Rule) [][]int {
-	filtered := [][]int{}
+	var filtered [][]int
 	for _, page := range pages {
 		if !slices.IsSortedFunc(page, ruleComparator(rules)) {
 			filtered = append(filtered, page)
@@ -76,7 +75,7 @@ func parseInput(input string) ([]Rule, [][]int) {
 }
 
 func parseOrderingRules(input string) []Rule {
-	rules := []Rule{}
+	var rules []Rule
 	for _, line := range strings.Split(input, "\n") {
 		separatorIndex := strings.Index(line, "|")
 		// Trust the input, ignore errors
@@ -88,7 +87,7 @@ func parseOrderingRules(input string) []Rule {
 }
 
 func parseUpdateNumbers(input string) [][]int {
-	updateNumbers := [][]int{}
+	var updateNumbers [][]int
 	for _, line := range strings.Split(input, "\n") {
 		// Trust the input, ignore errors
 		numbers, _ := utils.ToInts(strings.Split(line, ","))
