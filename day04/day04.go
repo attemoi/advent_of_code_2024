@@ -92,7 +92,7 @@ func isOutOfBounds(col int, row int, direction Vector, word string, runeGrid [][
 }
 
 func parseGrid(input string) [][]rune {
-	grid := [][]rune{}
+	var grid [][]rune
 	for _, line := range strings.Split(input, "\n") {
 		grid = append(grid, []rune(line))
 	}
