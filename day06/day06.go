@@ -21,20 +21,20 @@ func (v vector) Rotate90DegreesClockwise() vector {
 // GUARD
 
 type guard struct {
-	Position  vector
-	Direction vector
+	position  vector
+	direction vector
 }
 
 func (g guard) move() guard {
 	newGuard := g
-	newGuard.Position.x += g.Direction.x
-	newGuard.Position.y += g.Direction.y
+	newGuard.position.x += g.direction.x
+	newGuard.position.y += g.direction.y
 	return newGuard
 }
 
-func (g guard) TurnRight() guard {
+func (g guard) turnRight() guard {
 	newGuard := g
-	newGuard.Direction = g.Direction.Rotate90DegreesClockwise()
+	newGuard.direction = g.direction.Rotate90DegreesClockwise()
 	return newGuard
 }
 
@@ -68,7 +68,7 @@ func (am *areaMap) isInBounds(position vector) bool {
 		position.y < am.height
 }
 
-func (am *areaMap) IsObstructionAt(position vector) bool {
+func (am *areaMap) isObstructionAt(position vector) bool {
 	_, exists := am.obstructions[position]
 	return exists
 }
@@ -78,7 +78,7 @@ func (am *areaMap) IsObstructionAt(position vector) bool {
 func SolvePart1(input string) int {
 	areaMap := parseInput(input)
 	up := vector{x: 0, y: -1}
-	guard := guard{Position: areaMap.startPos, Direction: up}
+	guard := guard{position: areaMap.startPos, direction: up}
 	log, _ := simulateGuard(guard, areaMap)
 	return countDistinctGuardPositions(log)
 }
@@ -86,7 +86,7 @@ func SolvePart1(input string) int {
 func SolvePart2(input string) int {
 	areaMap := parseInput(input)
 	up := vector{x: 0, y: -1}
-	guard := guard{Position: areaMap.startPos, Direction: up}
+	guard := guard{position: areaMap.startPos, direction: up}
 	log, _ := simulateGuard(guard, areaMap)
 	return countTimeParadoxOptions(log, areaMap)
 }
@@ -94,7 +94,7 @@ func SolvePart2(input string) int {
 func countDistinctGuardPositions(log []guard) int {
 	positions := make(map[vector]struct{})
 	for _, guard := range log {
-		positions[guard.Position] = struct{}{}
+		positions[guard.position] = struct{}{}
 	}
 	return len(positions)
 }
@@ -103,9 +103,9 @@ func countTimeParadoxOptions(log []guard, obstructions areaMap) int {
 	// Brute force ¯\_(ツ)_/¯
 	possiblePositions := make(map[vector]struct{})
 	for i := 0; i < len(log)-1; i++ {
-		nextPos := log[i+1].Position
+		nextPos := log[i+1].position
 		_, alreadyTested := possiblePositions[nextPos]
-		if nextPos == log[0].Position || alreadyTested {
+		if nextPos == log[0].position || alreadyTested {
 			continue
 		}
 		obstructions.addObstruction(nextPos.x, nextPos.y)
@@ -119,10 +119,10 @@ func countTimeParadoxOptions(log []guard, obstructions areaMap) int {
 }
 
 func simulateGuard(guard guard, guardArea areaMap) (log []guard, isLoop bool) {
-	for guardArea.isInBounds(guard.Position) {
+	for guardArea.isInBounds(guard.position) {
 		log = append(log, guard)
 		for isGuardFacingObstruction(guard, guardArea) {
-			guard = guard.TurnRight()
+			guard = guard.turnRight()
 		}
 		guard = guard.move()
 		if slices.Contains(log, guard) {
@@ -133,7 +133,7 @@ func simulateGuard(guard guard, guardArea areaMap) (log []guard, isLoop bool) {
 }
 
 func isGuardFacingObstruction(guard guard, areaMap areaMap) bool {
-	return areaMap.IsObstructionAt(guard.move().Position)
+	return areaMap.isObstructionAt(guard.move().position)
 }
 
 func parseInput(input string) (areaMap areaMap) {

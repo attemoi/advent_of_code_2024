@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-type Rule struct {
-	X int
-	Y int
+type rule struct {
+	x int
+	y int
 }
 
 func SolvePart1(input string) int {
@@ -25,7 +25,7 @@ func SolvePart2(input string) int {
 	return sumOfMiddlePageNumbers(filteredPages)
 }
 
-func orderPages(pages [][]int, rules []Rule) {
+func orderPages(pages [][]int, rules []rule) {
 	for _, page := range pages {
 		slices.SortFunc(page, ruleComparator(rules))
 	}
@@ -40,7 +40,7 @@ func sumOfMiddlePageNumbers(pages [][]int) int {
 	return sum
 }
 
-func pagesInRightOrder(pages [][]int, rules []Rule) [][]int {
+func pagesInRightOrder(pages [][]int, rules []rule) [][]int {
 	var filtered [][]int
 	for _, page := range pages {
 		if slices.IsSortedFunc(page, ruleComparator(rules)) {
@@ -50,7 +50,7 @@ func pagesInRightOrder(pages [][]int, rules []Rule) [][]int {
 	return filtered
 }
 
-func pagesInWrongOrder(pages [][]int, rules []Rule) [][]int {
+func pagesInWrongOrder(pages [][]int, rules []rule) [][]int {
 	var filtered [][]int
 	for _, page := range pages {
 		if !slices.IsSortedFunc(page, ruleComparator(rules)) {
@@ -60,28 +60,28 @@ func pagesInWrongOrder(pages [][]int, rules []Rule) [][]int {
 	return filtered
 }
 
-func ruleComparator(rules []Rule) func(a, b int) int {
+func ruleComparator(rules []rule) func(a, b int) int {
 	return func(a, b int) int {
-		if slices.Contains(rules, Rule{X: a, Y: b}) {
+		if slices.Contains(rules, rule{x: a, y: b}) {
 			return -1
 		}
 		return 0
 	}
 }
 
-func parseInput(input string) ([]Rule, [][]int) {
+func parseInput(input string) ([]rule, [][]int) {
 	parts := strings.SplitN(input, "\n\n", 2)
 	return parseOrderingRules(parts[0]), parseUpdateNumbers(parts[1])
 }
 
-func parseOrderingRules(input string) []Rule {
-	var rules []Rule
+func parseOrderingRules(input string) []rule {
+	var rules []rule
 	for _, line := range strings.Split(input, "\n") {
 		separatorIndex := strings.Index(line, "|")
 		// Trust the input, ignore errors
 		x, _ := strconv.Atoi(line[:separatorIndex])
 		y, _ := strconv.Atoi(line[separatorIndex+1:])
-		rules = append(rules, Rule{X: x, Y: y})
+		rules = append(rules, rule{x: x, y: y})
 	}
 	return rules
 }
