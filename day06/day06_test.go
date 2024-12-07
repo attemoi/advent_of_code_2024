@@ -14,6 +14,15 @@ func TestSolvePart1(t *testing.T) {
 	}
 }
 
+func TestSolvePart1WithTripleTurn(t *testing.T) {
+	input := utils.ReadInput("input_test2.txt")
+	expected := 3
+	result := SolvePart1(string(input))
+	if result != expected {
+		t.Errorf("Expected %d, got %d", expected, result)
+	}
+}
+
 func TestSolvePart2(t *testing.T) {
 	input := utils.ReadInput("input_test.txt")
 	expected := 6
