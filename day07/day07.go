@@ -42,12 +42,16 @@ func isPossible(eq equation, operators []operator) bool {
 	if len(eq.numbers) == 1 {
 		return eq.numbers[0] == eq.result
 	} else if eq.numbers[0] > eq.result {
+		// None of the operators can decrease the value and we are already over
 		return false
 	}
 
 	for _, op := range operators {
 		newEq := eq
-		newEq.numbers = append([]int{op(eq.numbers[0], eq.numbers[1])}, eq.numbers[2:]...)
+		newEq.numbers = append(
+			[]int{op(eq.numbers[0], eq.numbers[1])},
+			eq.numbers[2:]...,
+		)
 		if isPossible(newEq, operators) {
 			return true
 		}

@@ -6,9 +6,9 @@ import (
 	"strings"
 )
 
-type Instruction struct {
-	Operation string
-	Arguments []int
+type instruction struct {
+	operation string
+	arguments []int
 }
 
 func SolvePart1(input string) int {
@@ -21,7 +21,7 @@ func SolvePart2(input string) int {
 	return process(instructions)
 }
 
-func parseInstructions(input string) []Instruction {
+func parseInstructions(input string) []instruction {
 	mulPattern := `mul\(\d+,\d+\)`
 	doPattern := `do\(\)`
 	dontPattern := `don't\(\)`
@@ -32,19 +32,19 @@ func parseInstructions(input string) []Instruction {
 	return toInstructions(rawInstructions)
 }
 
-func toInstructions(rawInstructions []string) []Instruction {
-	instructions := make([]Instruction, len(rawInstructions))
+func toInstructions(rawInstructions []string) []instruction {
+	instructions := make([]instruction, len(rawInstructions))
 	for i, rawValue := range rawInstructions {
 		instructions[i] = parseInstruction(rawValue)
 	}
 	return instructions
 }
 
-func parseInstruction(rawValue string) Instruction {
+func parseInstruction(rawValue string) instruction {
 	matches := regexp.MustCompile(`(.*)\((.*)\)`).FindStringSubmatch(rawValue)
 	operation := matches[1]
 	arguments := matches[2]
-	return Instruction{Operation: operation, Arguments: parseArguments(arguments)}
+	return instruction{operation: operation, arguments: parseArguments(arguments)}
 }
 
 func parseArguments(rawValue string) []int {
@@ -52,27 +52,27 @@ func parseArguments(rawValue string) []int {
 	return arguments
 }
 
-func processOnlyMul(instructions []Instruction) int {
+func processOnlyMul(instructions []instruction) int {
 	sum := 0
 	for _, instruction := range instructions {
-		if instruction.Operation == "mul" {
-			sum += instruction.Arguments[0] * instruction.Arguments[1]
+		if instruction.operation == "mul" {
+			sum += instruction.arguments[0] * instruction.arguments[1]
 		}
 	}
 	return sum
 }
 
-func process(instructions []Instruction) int {
+func process(instructions []instruction) int {
 	sum := 0
 	do := true
 	for _, instruction := range instructions {
-		if instruction.Operation == "do" {
+		if instruction.operation == "do" {
 			do = true
-		} else if instruction.Operation == "don't" {
+		} else if instruction.operation == "don't" {
 			do = false
 		} else if do {
-			if instruction.Operation == "mul" {
-				sum += instruction.Arguments[0] * instruction.Arguments[1]
+			if instruction.operation == "mul" {
+				sum += instruction.arguments[0] * instruction.arguments[1]
 			}
 		}
 	}
