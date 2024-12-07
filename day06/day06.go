@@ -5,98 +5,150 @@ import (
 	"strings"
 )
 
-type Vector struct {
-	X, Y int
+// VECTOR
+
+type vector struct {
+	x, y int
 }
 
-func (v Vector) Rotate90DegreesClockwise() Vector {
-	return Vector{
-		X: -v.Y,
-		Y: v.X,
+func (v vector) Rotate90DegreesClockwise() vector {
+	return vector{
+		x: -v.y,
+		y: v.x,
 	}
 }
 
-type Guard struct {
-	Position  Vector
-	Direction Vector
+// GUARD
+
+type guard struct {
+	Position  vector
+	Direction vector
 }
 
-func (g Guard) Move() Guard {
+func (g guard) move() guard {
 	newGuard := g
-	newGuard.Position.X += g.Direction.X
-	newGuard.Position.Y += g.Direction.Y
+	newGuard.Position.x += g.Direction.x
+	newGuard.Position.y += g.Direction.y
 	return newGuard
 }
 
-func (g Guard) TurnRight() Guard {
+func (g guard) TurnRight() guard {
 	newGuard := g
 	newGuard.Direction = g.Direction.Rotate90DegreesClockwise()
 	return newGuard
 }
 
+// MAP
+
+type areaMap struct {
+	obstructions map[vector]struct{}
+	startPos     vector
+	width        int
+	height       int
+}
+
+func newAreaMap() *areaMap {
+	return &areaMap{
+		obstructions: make(map[vector]struct{}),
+	}
+}
+
+func (am *areaMap) addObstruction(x int, y int) {
+	am.obstructions[vector{x: x, y: y}] = struct{}{}
+}
+
+func (am *areaMap) deleteObstruction(x int, y int) {
+	delete(am.obstructions, vector{x: x, y: y})
+}
+
+func (am *areaMap) isInBounds(position vector) bool {
+	return position.x >= 0 &&
+		position.x < am.width &&
+		position.y >= 0 &&
+		position.y < am.height
+}
+
+func (am *areaMap) IsObstructionAt(position vector) bool {
+	_, exists := am.obstructions[position]
+	return exists
+}
+
+// SOLUTION
+
 func SolvePart1(input string) int {
-	obstructions, guardPos := parseInput(input)
-	up := Vector{X: 0, Y: -1}
-	guard := Guard{Position: guardPos, Direction: up}
-	log, _ := simulateGuard(guard, obstructions)
+	areaMap := parseInput(input)
+	up := vector{x: 0, y: -1}
+	guard := guard{Position: areaMap.startPos, Direction: up}
+	log, _ := simulateGuard(guard, areaMap)
 	return countDistinctGuardPositions(log)
 }
 
 func SolvePart2(input string) int {
-	obstructions, guardPos := parseInput(input)
-	up := Vector{X: 0, Y: -1}
-	guard := Guard{Position: guardPos, Direction: up}
-	log, _ := simulateGuard(guard, obstructions)
-	return countTimeParadoxOptions(log, obstructions)
+	areaMap := parseInput(input)
+	up := vector{x: 0, y: -1}
+	guard := guard{Position: areaMap.startPos, Direction: up}
+	log, _ := simulateGuard(guard, areaMap)
+	return countTimeParadoxOptions(log, areaMap)
 }
 
-func countDistinctGuardPositions(log []Guard) int {
-	uniqueElements := make(map[Vector]struct{})
+func countDistinctGuardPositions(log []guard) int {
+	positions := make(map[vector]struct{})
 	for _, guard := range log {
-		uniqueElements[guard.Position] = struct{}{}
+		positions[guard.Position] = struct{}{}
 	}
-	return len(uniqueElements)
+	return len(positions)
 }
 
-func countTimeParadoxOptions(log []Guard, obstructions [][]rune) int {
-	return 0
+func countTimeParadoxOptions(log []guard, obstructions areaMap) int {
+	// Brute force ¯\_(ツ)_/¯
+	possiblePositions := make(map[vector]struct{})
+	for i := 0; i < len(log)-1; i++ {
+		nextPos := log[i+1].Position
+		_, alreadyTested := possiblePositions[nextPos]
+		if nextPos == log[0].Position || alreadyTested {
+			continue
+		}
+		obstructions.addObstruction(nextPos.x, nextPos.y)
+		_, isLoop := simulateGuard(log[0], obstructions)
+		obstructions.deleteObstruction(nextPos.x, nextPos.y)
+		if isLoop {
+			possiblePositions[vector{x: nextPos.x, y: nextPos.y}] = struct{}{}
+		}
+	}
+	return len(possiblePositions)
 }
 
-func simulateGuard(guard Guard, obstructions [][]rune) (log []Guard, isLoop bool) {
-	for isInBounds(guard.Position, obstructions) {
-		// Check if we have already been in this position
+func simulateGuard(guard guard, guardArea areaMap) (log []guard, isLoop bool) {
+	for guardArea.isInBounds(guard.Position) {
+		log = append(log, guard)
+		for isGuardFacingObstruction(guard, guardArea) {
+			guard = guard.TurnRight()
+		}
+		guard = guard.move()
 		if slices.Contains(log, guard) {
 			return log, true
-		}
-		log = append(log, guard)
-		guard = guard.Move()
-		if isGuardFacingObstruction(guard, obstructions) {
-			guard = guard.TurnRight()
 		}
 	}
 	return log, false
 }
 
-func isGuardFacingObstruction(guard Guard, obstructions [][]rune) bool {
-	nextPos := guard.Move().Position
-	return isInBounds(nextPos, obstructions) &&
-		obstructions[nextPos.Y][nextPos.X] == '#'
+func isGuardFacingObstruction(guard guard, areaMap areaMap) bool {
+	return areaMap.IsObstructionAt(guard.move().Position)
 }
 
-func isInBounds(position Vector, obstructions [][]rune) bool {
-	return position.X >= 0 &&
-		position.X < len(obstructions[0]) &&
-		position.Y >= 0 &&
-		position.Y < len(obstructions)
-}
-
-func parseInput(input string) (obstructions [][]rune, guardPos Vector) {
-	for y, line := range strings.Split(input, "\n") {
-		guardIndex := strings.Index(line, "^")
-		if guardIndex >= 0 {
-			guardPos = Vector{X: guardIndex, Y: y}
+func parseInput(input string) (areaMap areaMap) {
+	areaMap = *newAreaMap()
+	lines := strings.Split(input, "\n")
+	for y, line := range lines {
+		for x, rune := range line {
+			if rune == '^' {
+				areaMap.startPos = vector{x: x, y: y}
+			} else if rune == '#' {
+				areaMap.addObstruction(x, y)
+			}
 		}
-		obstructions = append(obstructions, []rune(line))
 	}
-	return obstructions, guardPos
+	areaMap.width = len(lines[0])
+	areaMap.height = len(lines)
+	return areaMap
 }
