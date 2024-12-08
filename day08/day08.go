@@ -1,35 +1,34 @@
 package day08
 
 import (
+	"aoc2024/utils"
 	"strings"
 	"unicode"
 )
 
-type vector struct {
-	x, y int
-}
+type Vector = utils.Vector
 
 type areaMap struct {
-	antennasByType map[rune][]vector
+	antennasByType map[rune][]Vector
 	width          int
 	height         int
 }
 
 func newAreaMap() *areaMap {
 	return &areaMap{
-		antennasByType: make(map[rune][]vector),
+		antennasByType: make(map[rune][]Vector),
 	}
 }
 
 func (am *areaMap) addAntenna(r rune, x int, y int) {
-	am.antennasByType[r] = append(am.antennasByType[r], vector{x: x, y: y})
+	am.antennasByType[r] = append(am.antennasByType[r], Vector{X: x, Y: y})
 }
 
-func (am *areaMap) isInBounds(position vector) bool {
-	return position.x >= 0 &&
-		position.x < am.width &&
-		position.y >= 0 &&
-		position.y < am.height
+func (am *areaMap) isInBounds(position Vector) bool {
+	return position.X >= 0 &&
+		position.X < am.width &&
+		position.Y >= 0 &&
+		position.Y < am.height
 }
 
 func SolvePart1(input string) int {
@@ -44,21 +43,21 @@ func SolvePart2(input string) int {
 	return len(antiNodes)
 }
 
-func findAntiNodesPart1(areaMap areaMap) map[vector]struct{} {
-	antiNodes := make(map[vector]struct{})
+func findAntiNodesPart1(areaMap areaMap) map[Vector]struct{} {
+	antiNodes := make(map[Vector]struct{})
 	for _, antennas := range areaMap.antennasByType {
 		// Iterate over all pairs
 		for i := 0; i < len(antennas); i++ {
 			for j := i + 1; j < len(antennas); j++ {
 				// Calculate vector between two antennas
-				v := vector{x: antennas[j].x - antennas[i].x, y: antennas[j].y - antennas[i].y}
+				v := antennas[j].Substract(antennas[i])
 
-				antiNode1 := vector{antennas[i].x - v.x, antennas[i].y - v.y}
+				antiNode1 := antennas[i].Substract(v)
 				if areaMap.isInBounds(antiNode1) {
 					antiNodes[antiNode1] = struct{}{}
 				}
 
-				antiNode2 := vector{antennas[j].x + v.x, antennas[i].y + v.y}
+				antiNode2 := antennas[j].Add(v)
 				if areaMap.isInBounds(antiNode2) {
 					antiNodes[antiNode2] = struct{}{}
 				}
@@ -68,27 +67,25 @@ func findAntiNodesPart1(areaMap areaMap) map[vector]struct{} {
 	return antiNodes
 }
 
-func findAntiNodesPart2(areaMap areaMap) map[vector]struct{} {
-	antiNodes := make(map[vector]struct{})
+func findAntiNodesPart2(areaMap areaMap) map[Vector]struct{} {
+	antiNodes := make(map[Vector]struct{})
 	for _, antennas := range areaMap.antennasByType {
 		// Iterate over all pairs
 		for i := 0; i < len(antennas); i++ {
 			for j := i + 1; j < len(antennas); j++ {
 				// Calculate vector between two antennas
-				v := vector{x: antennas[j].x - antennas[i].x, y: antennas[j].y - antennas[i].y}
+				v := antennas[j].Substract(antennas[i])
 
 				currentPos := antennas[i]
 				for areaMap.isInBounds(currentPos) {
 					antiNodes[currentPos] = struct{}{}
-					currentPos.x -= v.x
-					currentPos.y -= v.y
+					currentPos = currentPos.Substract(v)
 				}
 
 				currentPos = antennas[j]
 				for areaMap.isInBounds(currentPos) {
 					antiNodes[currentPos] = struct{}{}
-					currentPos.x += v.x
-					currentPos.y += v.y
+					currentPos = currentPos.Add(v)
 				}
 			}
 		}
