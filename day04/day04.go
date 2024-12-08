@@ -1,12 +1,11 @@
 package day04
 
 import (
+	"aoc2024/utils"
 	"strings"
 )
 
-type vector struct {
-	x, y int
-}
+type Vector = utils.Vector
 
 func SolvePart1(input string) int {
 	runeGrid := parseGrid(input)
@@ -19,15 +18,15 @@ func SolvePart2(input string) int {
 }
 
 func countXmasInstances(runeGrid [][]rune) int {
-	allDirections := []vector{
-		{x: 0, y: -1},  // NORTH
-		{x: 1, y: -1},  // NORTH EAST
-		{x: 1, y: 0},   // EAST
-		{x: 1, y: 1},   // SOUTH EAST
-		{x: 0, y: 1},   // SOUTH
-		{x: -1, y: 1},  // SOUTH WEST
-		{x: -1, y: 0},  // WEST
-		{x: -1, y: -1}, // NORTH WEST
+	allDirections := []Vector{
+		{X: 0, Y: -1},  // NORTH
+		{X: 1, Y: -1},  // NORTH EAST
+		{X: 1, Y: 0},   // EAST
+		{X: 1, Y: 1},   // SOUTH EAST
+		{X: 0, Y: 1},   // SOUTH
+		{X: -1, Y: 1},  // SOUTH WEST
+		{X: -1, Y: 0},  // WEST
+		{X: -1, Y: -1}, // NORTH WEST
 	}
 
 	sum := 0
@@ -47,8 +46,8 @@ func countMasCrossInstances(runeGrid [][]rune) int {
 	sum := 0
 	for y := range runeGrid {
 		for x := range runeGrid[y] {
-			southEast := vector{x: 1, y: 1}
-			southWest := vector{x: -1, y: 1}
+			southEast := utils.Vector{X: 1, Y: 1}
+			southWest := utils.Vector{X: -1, Y: 1}
 
 			if (isWordFound(x, y, southEast, "SAM", runeGrid) || isWordFound(x, y, southEast, "MAS", runeGrid)) &&
 				(isWordFound(x+2, y, southWest, "SAM", runeGrid) || isWordFound(x+2, y, southWest, "MAS", runeGrid)) {
@@ -60,14 +59,14 @@ func countMasCrossInstances(runeGrid [][]rune) int {
 	return sum
 }
 
-func isWordFound(col int, row int, direction vector, word string, runeGrid [][]rune) bool {
+func isWordFound(col int, row int, direction Vector, word string, runeGrid [][]rune) bool {
 	if isOutOfBounds(col, row, direction, word, runeGrid) {
 		return false
 	}
 
 	for i, rune := range word {
-		currentCol := col + i*direction.x
-		currentRow := row + i*direction.y
+		currentCol := col + i*direction.X
+		currentRow := row + i*direction.Y
 		if rune != runeGrid[currentRow][currentCol] {
 			return false
 		}
@@ -76,11 +75,11 @@ func isWordFound(col int, row int, direction vector, word string, runeGrid [][]r
 	return true
 }
 
-func isOutOfBounds(col int, row int, direction vector, word string, runeGrid [][]rune) bool {
+func isOutOfBounds(col int, row int, direction Vector, word string, runeGrid [][]rune) bool {
 	numRows := len(runeGrid)
 	numColumns := len(runeGrid[0])
-	endCol := col + direction.x*(len(word)-1)
-	endRow := row + direction.y*(len(word)-1)
+	endCol := col + direction.X*(len(word)-1)
+	endRow := row + direction.Y*(len(word)-1)
 	return col < 0 ||
 		col > (numColumns-1) ||
 		row < 0 ||
