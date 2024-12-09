@@ -46,23 +46,20 @@ func SolvePart2(input string) int {
 func findAntiNodesPart1(areaMap areaMap) map[Vector]struct{} {
 	antiNodes := make(map[Vector]struct{})
 	for _, antennas := range areaMap.antennasByType {
-		// Iterate over all pairs
-		for i := 0; i < len(antennas); i++ {
-			for j := i + 1; j < len(antennas); j++ {
-				// Calculate vector between two antennas
-				v := antennas[j].Substract(antennas[i])
+		doForAllPairs(antennas, func(a, b Vector) {
+			vectorBetweenAntennas := b.Substract(a)
 
-				antiNode1 := antennas[i].Substract(v)
-				if areaMap.isInBounds(antiNode1) {
-					antiNodes[antiNode1] = struct{}{}
-				}
-
-				antiNode2 := antennas[j].Add(v)
-				if areaMap.isInBounds(antiNode2) {
-					antiNodes[antiNode2] = struct{}{}
-				}
+			antiNode1 := a.Substract(vectorBetweenAntennas)
+			if areaMap.isInBounds(antiNode1) {
+				antiNodes[antiNode1] = struct{}{}
 			}
-		}
+
+			antiNode2 := b.Add(vectorBetweenAntennas)
+			if areaMap.isInBounds(antiNode2) {
+				antiNodes[antiNode2] = struct{}{}
+			}
+
+		})
 	}
 	return antiNodes
 }
@@ -70,27 +67,33 @@ func findAntiNodesPart1(areaMap areaMap) map[Vector]struct{} {
 func findAntiNodesPart2(areaMap areaMap) map[Vector]struct{} {
 	antiNodes := make(map[Vector]struct{})
 	for _, antennas := range areaMap.antennasByType {
-		// Iterate over all pairs
-		for i := 0; i < len(antennas); i++ {
-			for j := i + 1; j < len(antennas); j++ {
-				// Calculate vector between two antennas
-				v := antennas[j].Substract(antennas[i])
+		doForAllPairs(antennas, func(a, b Vector) {
+			vectorBetweenAntennas := b.Substract(a)
 
-				currentPos := antennas[i]
-				for areaMap.isInBounds(currentPos) {
-					antiNodes[currentPos] = struct{}{}
-					currentPos = currentPos.Substract(v)
-				}
-
-				currentPos = antennas[j]
-				for areaMap.isInBounds(currentPos) {
-					antiNodes[currentPos] = struct{}{}
-					currentPos = currentPos.Add(v)
-				}
+			currentPos := a
+			for areaMap.isInBounds(currentPos) {
+				antiNodes[currentPos] = struct{}{}
+				currentPos = currentPos.Substract(vectorBetweenAntennas)
 			}
-		}
+
+			currentPos = b
+			for areaMap.isInBounds(currentPos) {
+				antiNodes[currentPos] = struct{}{}
+				currentPos = currentPos.Add(vectorBetweenAntennas)
+			}
+
+		})
 	}
 	return antiNodes
+}
+
+// run function for each possible pair of two elements within a slice
+func doForAllPairs[T any](slice []T, process func(a, b T)) {
+	for i := 0; i < len(slice); i++ {
+		for j := i + 1; j < len(slice); j++ {
+			process(slice[i], slice[j])
+		}
+	}
 }
 
 func parseMap(input string) areaMap {
