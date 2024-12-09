@@ -11,9 +11,11 @@ import (
 	"aoc2024/day07"
 	"aoc2024/day08"
 	"aoc2024/day09"
+	"aoc2024/day10"
 	"aoc2024/utils"
 	"fmt"
 	"os"
+	"time"
 )
 
 func main() {
@@ -21,6 +23,8 @@ func main() {
 		fmt.Println("Usage: go run main.go <day>")
 		return
 	}
+
+	start := time.Now()
 
 	day := os.Args[1]
 	var input string
@@ -65,7 +69,12 @@ func main() {
 		input = utils.ReadInput("day09/input.txt")
 		fmt.Println("Part 1:", day09.SolvePart1(input))
 		fmt.Println("Part 2:", day09.SolvePart2(input))
+	case "10":
+		input = utils.ReadInput("day10/input.txt")
+		fmt.Println("Part 1:", day10.SolvePart1(input))
+		fmt.Println("Part 2:", day10.SolvePart2(input))
 	default:
 		fmt.Printf("Day %s not solved yet!\n", day)
 	}
+	fmt.Println("Took ", time.Since(start))
 }
