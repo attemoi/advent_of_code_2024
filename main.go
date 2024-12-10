@@ -24,57 +24,53 @@ func main() {
 		return
 	}
 
-	start := time.Now()
+	var part1Solver, part2Solver func(input string) int
 
 	day := os.Args[1]
 	var input string
 	switch day {
 	case "00":
-		input = utils.ReadInput("day00/input.txt")
-		fmt.Println("Part 1:", day00.SolvePart1(input))
-		fmt.Println("Part 2:", day00.SolvePart2(input))
+		part1Solver = day00.SolvePart1
+		part2Solver = day00.SolvePart2
 	case "01":
-		input = utils.ReadInput("day01/input.txt")
-		fmt.Println("Part 1:", day01.SolvePart1(input))
-		fmt.Println("Part 2:", day01.SolvePart2(input))
+		part1Solver = day01.SolvePart1
+		part2Solver = day01.SolvePart2
 	case "02":
-		input = utils.ReadInput("day02/input.txt")
-		fmt.Println("Part 1:", day02.SolvePart1(input))
-		fmt.Println("Part 2:", day02.SolvePart2(input))
+		part1Solver = day02.SolvePart1
+		part2Solver = day02.SolvePart2
 	case "03":
-		input = utils.ReadInput("day03/input.txt")
-		fmt.Println("Part 1:", day03.SolvePart1(input))
-		fmt.Println("Part 2:", day03.SolvePart2(input))
+		part1Solver = day03.SolvePart1
+		part2Solver = day03.SolvePart2
 	case "04":
-		input = utils.ReadInput("day04/input.txt")
-		fmt.Println("Part 1:", day04.SolvePart1(input))
-		fmt.Println("Part 2:", day04.SolvePart2(input))
+		part1Solver = day04.SolvePart1
+		part2Solver = day04.SolvePart2
 	case "05":
-		input = utils.ReadInput("day05/input.txt")
-		fmt.Println("Part 1:", day05.SolvePart1(input))
-		fmt.Println("Part 2:", day05.SolvePart2(input))
+		part1Solver = day05.SolvePart1
+		part2Solver = day05.SolvePart2
 	case "06":
-		input = utils.ReadInput("day06/input.txt")
-		fmt.Println("Part 1:", day06.SolvePart1(input))
-		fmt.Println("Part 2:", day06.SolvePart2(input))
+		part1Solver = day06.SolvePart1
+		part2Solver = day06.SolvePart2
 	case "07":
-		input = utils.ReadInput("day07/input.txt")
-		fmt.Println("Part 1:", day07.SolvePart1(input))
-		fmt.Println("Part 2:", day07.SolvePart2(input))
+		part1Solver = day07.SolvePart1
+		part2Solver = day07.SolvePart2
 	case "08":
-		input = utils.ReadInput("day08/input.txt")
-		fmt.Println("Part 1:", day08.SolvePart1(input))
-		fmt.Println("Part 2:", day08.SolvePart2(input))
+		part1Solver = day08.SolvePart1
+		part2Solver = day08.SolvePart2
 	case "09":
-		input = utils.ReadInput("day09/input.txt")
-		fmt.Println("Part 1:", day09.SolvePart1(input))
-		fmt.Println("Part 2:", day09.SolvePart2(input))
+		part1Solver = day09.SolvePart1
+		part2Solver = day09.SolvePart2
 	case "10":
-		input = utils.ReadInput("day10/input.txt")
-		fmt.Println("Part 1:", day10.SolvePart1(input))
-		fmt.Println("Part 2:", day10.SolvePart2(input))
+		part1Solver = day10.SolvePart1
+		part2Solver = day10.SolvePart2
 	default:
 		fmt.Printf("Day %s not solved yet!\n", day)
+		return
 	}
-	fmt.Println("Took ", time.Since(start))
+
+	input = utils.ReadInput("day" + day + "/input.txt")
+	start := time.Now()
+	fmt.Println("Part 1:", part1Solver(input))
+	fmt.Println("Part 2:", part2Solver(input))
+	fmt.Println("Took", time.Since(start))
+
 }
