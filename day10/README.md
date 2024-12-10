@@ -1,5 +1,3 @@
-# <TITLE OF ASSIGNMENT>
+# Day 10: Hoof It
 
-This is a template to be copy-pasted for each day
-
-Link to assignment: [https://adventofcode.com/2024/day/0]
+Link to assignment: [https://adventofcode.com/2024/day/10]
