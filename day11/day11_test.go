@@ -7,7 +7,7 @@ import (
 
 func TestSolvePart1(t *testing.T) {
 	input := utils.ReadInput("input_test.txt")
-	expected := 60
+	expected := 55312
 	result := SolvePart1(string(input))
 	if result != expected {
 		t.Errorf("Expected %d, got %d", expected, result)
