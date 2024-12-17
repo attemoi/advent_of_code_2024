@@ -16,6 +16,7 @@ import (
 	"aoc2024/day12"
 	"aoc2024/day13"
 	"aoc2024/day14"
+	"aoc2024/day15"
 	"aoc2024/utils"
 	"fmt"
 	"os"
@@ -78,6 +79,9 @@ func main() {
 	case "14":
 		part1Solver = day14.SolvePart1
 		part2Solver = day14.SolvePart2
+	case "15":
+		part1Solver = day15.SolvePart1
+		part2Solver = day15.SolvePart2
 	default:
 		fmt.Printf("Day %s not solved yet!\n", day)
 		return
